@@ -1,0 +1,6 @@
+# Folder dataset dari aplikasi Streamlit
+dataset/
+processed_dataset/
+dataset_*/
+processed_dataset_*/
+*.zip
