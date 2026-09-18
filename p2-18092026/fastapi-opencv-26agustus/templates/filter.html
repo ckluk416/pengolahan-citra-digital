@@ -1,0 +1,89 @@
+{% extends "base.html" %} {% block title %}Filtering & Transformasi Fourier{%
+endblock %} {% block content %}
+<div class="container mt-5">
+  <h2 class="text-center">Filtering Spasial & Transformasi Fourier</h2>
+  <p class="text-center text-muted">
+    Konvolusi, zero padding, low/high/band-pass filter, spektrum Fourier, dan
+    reduksi noise periodik (Pertemuan 4).
+  </p>
+  <form
+    action="/filter/"
+    enctype="multipart/form-data"
+    method="post"
+    class="mt-4"
+  >
+    <div class="mb-3">
+      <label for="file">Pilih Gambar:</label>
+      <input
+        name="file"
+        type="file"
+        accept="image/*"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <label for="operation">Pilih Operasi:</label>
+      <select name="operation" id="operation" class="form-select" required>
+        <optgroup label="Konvolusi (kernel 3x3)">
+          <option value="conv_average">Konvolusi - Average (blur)</option>
+          <option value="conv_sharpen">Konvolusi - Sharpen</option>
+          <option value="conv_edge">Konvolusi - Edge Detection</option>
+        </optgroup>
+        <optgroup label="Padding">
+          <option value="zero_padding">Zero Padding</option>
+        </optgroup>
+        <optgroup label="Filter Frekuensi (spasial)">
+          <option value="filter_low">Low-Pass (Gaussian Blur)</option>
+          <option value="filter_high">High-Pass</option>
+          <option value="filter_band">Band-Pass (Difference of Gaussians)</option>
+        </optgroup>
+        <optgroup label="Domain Frekuensi">
+          <option value="fourier">Spektrum Magnitudo Fourier</option>
+          <option value="periodic_noise">Reduksi Noise Periodik (mask FFT)</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="mb-3" id="paddingGroup">
+      <label for="padding_size">Ukuran Padding (px):</label>
+      <input
+        type="number"
+        class="form-control"
+        name="padding_size"
+        id="padding_size"
+        min="1"
+        max="500"
+        value="20"
+      />
+    </div>
+    <div class="mb-3" id="radiusGroup">
+      <label for="radius">Radius Mask FFT (px):</label>
+      <input
+        type="number"
+        class="form-control"
+        name="radius"
+        id="radius"
+        min="1"
+        max="500"
+        value="30"
+      />
+    </div>
+    <div class="text-center">
+      <input type="submit" value="Terapkan" class="btn btn-primary" />
+    </div>
+  </form>
+
+  <script>
+    // Hanya tampilkan input parameter yang relevan dengan operasi yang dipilih
+    const op = document.getElementById("operation");
+    const paddingGroup = document.getElementById("paddingGroup");
+    const radiusGroup = document.getElementById("radiusGroup");
+    function toggleParams() {
+      paddingGroup.style.display = op.value === "zero_padding" ? "" : "none";
+      radiusGroup.style.display = op.value === "periodic_noise" ? "" : "none";
+    }
+    op.addEventListener("change", toggleParams);
+    toggleParams();
+  </script>
+</div>
+{% endblock %}

@@ -1,0 +1,1 @@
+Konversi kode Colab yang ada menjadi sebuah endpoint FastAPI, lalu integrasikan dengan aplikasi web atau kode Anda. Setelah integrasi selesai, lakukan pengujian menggunakan gambar pilihan Anda. Terakhir, buatlah kesimpulan berdasarkan hasil pengujian tersebut.
