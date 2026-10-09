@@ -218,3 +218,5 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# Earth Engine script output
+p5-pratubes-09102026/python/output/
