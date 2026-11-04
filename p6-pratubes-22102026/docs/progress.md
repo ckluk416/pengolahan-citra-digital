@@ -6,6 +6,7 @@ Topik: pemetaan genangan banjir pasca-Siklon Senyar di Aceh Utara dan Lhokseumaw
 | --- | --- | --- | --- |
 | 1 | 22 Oktober 2026 | proposal topik, notebook preprocessing sampai peta genangan | 27.285 ha genangan baru, OA 0,886 dan kappa 0,711 terhadap Sentinel-2 |
 | 2 | 29 Oktober 2026 | uji sensitivitas tiga parameter preprocessing | filter speckle paling berpengaruh (9,0%), ambang selisih dan MMU di bawah 2,2% |
+| 3 | 4 November 2026 | durasi genangan dari deret waktu Sentinel-1 Desember 2025 | 68,6% surut dalam 6 hari, 3.098 ha bertahan 24 hari atau lebih |
 
 ---
 
@@ -29,4 +30,20 @@ Notebook `notebook/sensitivitas-parameter.ipynb` menjalankan ulang pipeline deng
 
 Ambang selisih dan MMU hampir tidak menggeser hasil, jadi nilai di notebook utama aman dipertahankan. filter yang paling menentukan. median 5x5 memberi luas sekitar 9% lebih besar dengan presisi terhadap Sentinel-2 yang sama (0,911 dan 0,913) dan recall lebih tinggi (0,635 dan 0,589), jadi alasan memilih Lee 7x7 di notebook utama perlu ditinjau ulang. notebook utama belum diubah karena referensi MNDWI memakai band SWIR 20 m yang juga tidak bisa melihat pematang sempit
 
-Rencana berikutnya: durasi genangan dari scene 3, 9, dan 10 Desember 2025, lalu luas genangan per kecamatan
+## 4 November 2026, Durasi Genangan
+
+Notebook `notebook/durasi-genangan.ipynb` menerapkan pipeline yang sama ke empat scene Desember 2025 dari tiap orbit (3, 9, 15, 21 Desember untuk orbit 41 dan 4, 10, 16, 22 Desember untuk orbit 143), dengan ambang Otsu tanggal saat banjir. luas di tanggal saat banjir sama dengan notebook utama, 27.285 ha
+
+| durasi | luas (ha) | persen |
+| --- | ---: | ---: |
+| kurang dari 6 hari | 18.707 | 68,6% |
+| 6 sampai 11 hari | 3.782 | 13,9% |
+| 12 sampai 17 hari | 709 | 2,6% |
+| 18 sampai 23 hari | 989 | 3,6% |
+| 24 hari atau lebih | 3.098 | 11,4% |
+
+![durasi](../gambar/09-peta-durasi-genangan.png)
+
+Genangan surut cepat, enam hari sesudah banjir luasnya tinggal sekitar 30%. yang bertahan 24 hari atau lebih hampir semuanya lahan pertanian dan berbentuk petak persegi dekat pesisir. belum bisa dipastikan apakah itu genangan banjir yang tertahan atau petak sawah dan tambak yang memang sengaja digenangi, radar saja tidak bisa membedakannya. luas sempat naik lagi pada 15 sampai 16 Desember, kemungkinan dari hujan susulan atau pengairan sawah
+
+Rencana berikutnya: luas genangan per kecamatan, lalu memeriksa petak yang bertahan lama dengan citra tanggal yang sama tahun sebelumnya
