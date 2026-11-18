@@ -1,0 +1,201 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+
+\title{Tugas Topik 12: Warna}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2.5em}
+
+\section*{Asumsi}
+\begin{itemize}
+  \item Nilai RGB dinormalisasi ke rentang $[0,1]$ dengan membagi 255.
+  \item Konversi RGB$\leftrightarrow$XYZ memakai matriks sRGB dengan illuminant D65, tanpa koreksi gamma.
+  \item Titik putih acuan D65: $X_n = 0.950456$, $Y_n = 1$, $Z_n = 1.088754$.
+  \item YCbCr memakai standar JPEG (\textit{full range}).
+\end{itemize}
+
+\section*{Soal 1: RGB $= [128\ 255\ 100]$}
+
+\textbf{Normalisasi:}
+\[
+r = \frac{128}{255} = 0.5020,\qquad g = \frac{255}{255} = 1.0000,\qquad b = \frac{100}{255} = 0.3922
+\]
+
+\subsection*{a. RGB ke HSV}
+\[
+\max = 1.0000\ (G),\qquad \min = 0.3922\ (B),\qquad \Delta = \max - \min = 0.6078
+\]
+\begin{align*}
+V &= \max = 1.0000\\
+S &= \frac{\Delta}{\max} = \frac{0.6078}{1} = 0.6078
+\end{align*}
+Karena nilai maksimum ada pada $G$:
+\begin{align*}
+H &= 60^\circ \times \left(\frac{b - r}{\Delta}\right) + 120^\circ\\
+  &= 60^\circ \times \left(\frac{0.3922 - 0.5020}{0.6078}\right) + 120^\circ\\
+  &= 60^\circ \times (-0.1806) + 120^\circ = 109.16^\circ
+\end{align*}
+\[
+\boxed{\text{HSV} = [109.16^\circ,\ 0.6078,\ 1.0000]}
+\]
+
+\subsection*{b. RGB ke XYZ}
+\[
+\begin{bmatrix} X \\ Y \\ Z \end{bmatrix} =
+\begin{bmatrix}
+0.412453 & 0.357580 & 0.180423\\
+0.212671 & 0.715160 & 0.072169\\
+0.019334 & 0.119193 & 0.950227
+\end{bmatrix}
+\begin{bmatrix} r \\ g \\ b \end{bmatrix}
+\]
+\begin{align*}
+X &= 0.412453(0.5020) + 0.357580(1) + 0.180423(0.3922) = 0.2070 + 0.3576 + 0.0708 = 0.6354\\
+Y &= 0.212671(0.5020) + 0.715160(1) + 0.072169(0.3922) = 0.1068 + 0.7152 + 0.0283 = 0.8502\\
+Z &= 0.019334(0.5020) + 0.119193(1) + 0.950227(0.3922) = 0.0097 + 0.1192 + 0.3726 = 0.5015
+\end{align*}
+\[
+\boxed{\text{XYZ} = [0.6354\ \ 0.8502\ \ 0.5015]}\quad\text{(skala 100: } [63.54\ \ 85.02\ \ 50.15])
+\]
+
+\subsection*{c. RGB ke CMY}
+\[
+C = 1 - r = 0.4980,\qquad M = 1 - g = 0,\qquad Y = 1 - b = 0.6078
+\]
+\[
+\boxed{\text{CMY} = [0.4980\ \ 0\ \ 0.6078]}\quad\text{(skala 255: } [127\ \ 0\ \ 155])
+\]
+
+\subsection*{d. RGB ke YCbCr}
+\begin{align*}
+Y  &= 0.299R + 0.587G + 0.114B\\
+C_b &= 128 - 0.168736R - 0.331264G + 0.5B\\
+C_r &= 128 + 0.5R - 0.418688G - 0.081312B
+\end{align*}
+\begin{align*}
+Y  &= 0.299(128) + 0.587(255) + 0.114(100) = 38.272 + 149.685 + 11.4 = 199.36\\
+C_b &= 128 - 0.168736(128) - 0.331264(255) + 0.5(100) = 128 - 21.598 - 84.472 + 50 = 71.93\\
+C_r &= 128 + 0.5(128) - 0.418688(255) - 0.081312(100) = 128 + 64 - 106.765 - 8.131 = 77.10
+\end{align*}
+\[
+\boxed{\text{YCbCr} \approx [199\ \ 72\ \ 77]}
+\]
+
+\subsection*{e. RGB ke Lab}
+Memakai XYZ dari poin b:
+\[
+f(t) =
+\begin{cases}
+t^{1/3}, & t > 0.008856\\[2pt]
+7.787\,t + \dfrac{16}{116}, & t \le 0.008856
+\end{cases}
+\]
+\begin{align*}
+\frac{X}{X_n} &= \frac{0.6354}{0.950456} = 0.6685 &&\Rightarrow f = 0.6685^{1/3} = 0.8744\\
+\frac{Y}{Y_n} &= \frac{0.8502}{1} = 0.8502 &&\Rightarrow f = 0.8502^{1/3} = 0.9473\\
+\frac{Z}{Z_n} &= \frac{0.5015}{1.088754} = 0.4607 &&\Rightarrow f = 0.4607^{1/3} = 0.7723
+\end{align*}
+\begin{align*}
+L &= 116\,f(Y/Y_n) - 16 = 116(0.9473) - 16 = 93.89\\
+a &= 500\,[f(X/X_n) - f(Y/Y_n)] = 500(0.8744 - 0.9473) = -36.49\\
+b &= 200\,[f(Y/Y_n) - f(Z/Z_n)] = 200(0.9473 - 0.7723) = 35.01
+\end{align*}
+\[
+\boxed{\text{Lab} = [93.89\ \ -36.49\ \ 35.01]}
+\]
+
+\newpage
+\section*{Soal 2: XYZ $= [100\ 100\ 100]$}
+
+\textbf{Normalisasi} (skala 100 ke $[0,1]$): $X = 1,\ Y = 1,\ Z = 1$
+
+\subsection*{a. XYZ ke RGB}
+Memakai invers matriks:
+\[
+\begin{bmatrix} r \\ g \\ b \end{bmatrix} =
+\begin{bmatrix}
+\phantom{-}3.240481 & -1.537152 & -0.498536\\
+-0.969255 & \phantom{-}1.875990 & \phantom{-}0.041556\\
+\phantom{-}0.055647 & -0.204041 & \phantom{-}1.057311
+\end{bmatrix}
+\begin{bmatrix} X \\ Y \\ Z \end{bmatrix}
+\]
+\begin{align*}
+r &= 3.2405 - 1.5372 - 0.4985 = 1.2048\\
+g &= -0.9693 + 1.8760 + 0.0416 = 0.9483\\
+b &= 0.0556 - 0.2040 + 1.0573 = 0.9089
+\end{align*}
+Nilai $r > 1$ berarti warna ini berada di luar gamut RGB, sehingga dilakukan \textit{clipping} ke rentang $[0,1]$:
+\[
+r = 1.0000,\qquad g = 0.9483,\qquad b = 0.9089
+\]
+\[
+\boxed{\text{RGB} \approx [255\ \ 242\ \ 232]}\quad\text{(sebelum clipping: } [307.2\ \ 241.8\ \ 231.8])
+\]
+
+\subsection*{b. XYZ ke HSV}
+Memakai RGB hasil clipping:
+\[
+\max = 1.0000\ (R),\qquad \min = 0.9089\ (B),\qquad \Delta = 0.0911
+\]
+\begin{align*}
+V &= \max = 1.0000\\
+S &= \frac{\Delta}{\max} = \frac{0.0911}{1} = 0.0911
+\end{align*}
+Karena nilai maksimum ada pada $R$:
+\[
+H = 60^\circ \times \left(\frac{g - b}{\Delta}\right) = 60^\circ \times \left(\frac{0.9483 - 0.9089}{0.0911}\right) = 60^\circ \times 0.4323 = 25.94^\circ
+\]
+\[
+\boxed{\text{HSV} = [25.94^\circ,\ 0.0911,\ 1.0000]}
+\]
+
+\subsection*{c. XYZ ke CMY}
+\[
+C = 1 - 1 = 0,\qquad M = 1 - 0.9483 = 0.0517,\qquad Y = 1 - 0.9089 = 0.0911
+\]
+\[
+\boxed{\text{CMY} = [0\ \ 0.0517\ \ 0.0911]}\quad\text{(skala 255: } [0\ \ 13\ \ 23])
+\]
+
+\subsection*{d. XYZ ke Lab}
+\begin{align*}
+\frac{X}{X_n} &= \frac{1}{0.950456} = 1.0521 &&\Rightarrow f = 1.0521^{1/3} = 1.0171\\
+\frac{Y}{Y_n} &= \frac{1}{1} = 1.0000 &&\Rightarrow f = 1.0000\\
+\frac{Z}{Z_n} &= \frac{1}{1.088754} = 0.9185 &&\Rightarrow f = 0.9185^{1/3} = 0.9721
+\end{align*}
+\begin{align*}
+L &= 116(1.0000) - 16 = 100\\
+a &= 500(1.0171 - 1.0000) = 8.54\\
+b &= 200(1.0000 - 0.9721) = 5.59
+\end{align*}
+\[
+\boxed{\text{Lab} = [100\ \ 8.54\ \ 5.59]}
+\]
+
+\section*{Ringkasan}
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Model & Soal 1: RGB $[128\ 255\ 100]$ & Soal 2: XYZ $[100\ 100\ 100]$\\
+\midrule
+RGB   & $[128\ \ 255\ \ 100]$ & $[255\ \ 242\ \ 232]$ (clipped)\\
+HSV   & $[109.16^\circ,\ 0.6078,\ 1]$ & $[25.94^\circ,\ 0.0911,\ 1]$\\
+XYZ   & $[0.6354\ \ 0.8502\ \ 0.5015]$ & $[1\ \ 1\ \ 1]$\\
+CMY   & $[0.4980\ \ 0\ \ 0.6078]$ & $[0\ \ 0.0517\ \ 0.0911]$\\
+YCbCr & $[199.36\ \ 71.93\ \ 77.10]$ & --\\
+Lab   & $[93.89\ \ -36.49\ \ 35.01]$ & $[100\ \ 8.54\ \ 5.59]$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}
